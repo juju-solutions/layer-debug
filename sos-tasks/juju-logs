@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+
+cp /var/log/juju/* $SOS_ARCHIVE_DIR

@@ -1,0 +1,9 @@
+name: sos
+summary: Provides a troubleshooting SOS action
+maintainer: George Kraft <george.kraft@canonical.com>
+description: |
+  This layer provides an SOS action, which allows users to gather
+  charm-specific debug data for troubleshooting purposes.
+tags:
+  - misc
+subordinate: false

@@ -14,7 +14,7 @@ log_file = None
 @contextmanager
 def archive_dir():
     """ Open a context with a new temporary directory. This temporary directory
-    is made available to child tasks as the SOS_ARCHIVE_DIR environment var.
+    is made available to child scripts as the SOS_ARCHIVE_DIR environment var.
 
     When the context closes, the directory is archived, and the archive
     location is added to Juju action output. """
@@ -41,11 +41,11 @@ def log(msg, depth=0):
     for line in str(msg).splitlines():
         log_file.write(prefix + line.rstrip() + "\n")
 
-def run_task(task):
-    """ Run a single task. Must be run inside an archive_dir context. """
-    log("Running task: " + task)
+def run_script(script):
+    """ Run a single script. Must be run inside an archive_dir context. """
+    log("Running script: " + script)
     process = subprocess.Popen(
-        "sos-tasks/" + task,
+        "sos-scripts/" + script,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT
     )
@@ -53,24 +53,24 @@ def run_task(task):
         log(line.decode("utf-8"), depth=1)
     exit_code = process.wait()
     if exit_code != 0:
-        log("ERROR: %s failed with exit code %d" % (task, exit_code))
+        log("ERROR: %s failed with exit code %d" % (script, exit_code))
 
-def run_all_tasks():
-    """ Run all tasks. For the sake of robustness, log and ignore any
+def run_all_scripts():
+    """ Run all scripts. For the sake of robustness, log and ignore any
     exceptions that occur.
 
     Must be run inside an archive_dir context. """
-    tasks = os.listdir("sos-tasks")
-    for task in tasks:
+    scripts = os.listdir("sos-scripts")
+    for script in scripts:
         try:
-            run_task(task)
+            run_script(script)
         except:
             log(traceback.format_exc())
 
 def main():
-    """ Open an archive context and run all tasks. """
+    """ Open an archive context and run all scripts. """
     with archive_dir():
-        run_all_tasks()
+        run_all_scripts()
 
 if __name__ == "__main__":
     main()

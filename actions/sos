@@ -67,8 +67,16 @@ def run_all_scripts():
         except:
             log(traceback.format_exc())
 
+def add_lib_folder_to_python_path():
+    """ Add lib folder to python path.
+
+    Reactive hooks do this. We'll do it as well, so that SOS scripts can import
+    the same things that reactive code can. """
+    os.environ["PYTHONPATH"] = "lib"
+
 def main():
     """ Open an archive context and run all scripts. """
+    add_lib_folder_to_python_path()
     with archive_dir():
         run_all_scripts()
 

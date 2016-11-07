@@ -1,0 +1,4 @@
+#!/bin/sh
+
+systemctl > $SOS_ARCHIVE_DIR/systemctl
+journalctl > $SOS_ARCHIVE_DIR/journalctl

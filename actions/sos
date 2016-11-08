@@ -9,22 +9,22 @@ from contextlib import contextmanager
 from datetime import datetime
 from charmhelpers.core.hookenv import action_set
 
+archive_dir = None
 log_file = None
 
 @contextmanager
-def archive_dir():
-    """ Open a context with a new temporary directory. This temporary directory
-    is made available to child scripts as the SOS_ARCHIVE_DIR environment var.
+def archive_context():
+    """ Open a context with a new temporary directory.
 
     When the context closes, the directory is archived, and the archive
     location is added to Juju action output. """
+    global archive_dir
     global log_file
     with tempfile.TemporaryDirectory() as temp_dir:
         name = "sos-" + datetime.now().strftime("%Y%m%d%H%M%S")
-        sos_archive_dir = os.path.join(temp_dir, name)
-        os.makedirs(sos_archive_dir)
-        os.environ["SOS_ARCHIVE_DIR"] = sos_archive_dir
-        with open("%s/sos.log" % sos_archive_dir, "w") as log_file:
+        archive_dir = os.path.join(temp_dir, name)
+        os.makedirs(archive_dir)
+        with open("%s/sos.log" % archive_dir, "w") as log_file:
             yield
         os.chdir(temp_dir)
         tar_path = "/home/ubuntu/%s.tar.gz" % name
@@ -32,26 +32,27 @@ def archive_dir():
             f.add(name)
         action_set({"output": "SOS archive dumped to " + tar_path})
 
-def log(msg, depth=0):
+def log(msg):
     """ Log a message that will be included in the SOS archive.
 
-    Must be run inside an archive_dir context. """
+    Must be run within archive_context """
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    prefix = "%s | %s" % (timestamp, "| " * depth)
     for line in str(msg).splitlines():
-        log_file.write(prefix + line.rstrip() + "\n")
+        log_file.write(timestamp + " | " + line.rstrip() + "\n")
 
 def run_script(script):
-    """ Run a single script. Must be run inside an archive_dir context. """
+    """ Run a single script. Must be run within archive_context """
     log("Running script: " + script)
-    process = subprocess.Popen(
-        "sos-scripts/" + script,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT
-    )
-    for line in process.stdout:
-        log(line.decode("utf-8"), depth=1)
-    exit_code = process.wait()
+    script_dir = os.path.join(archive_dir, script)
+    os.makedirs(script_dir)
+    os.environ["SOS_SCRIPT_DIR"] = script_dir
+    with open(script_dir + "/stdout", "w") as stdout:
+        with open(script_dir + "/stderr", "w") as stderr:
+            process = subprocess.Popen(
+                "sos-scripts/" + script,
+                stdout=stdout, stderr=stderr
+            )
+            exit_code = process.wait()
     if exit_code != 0:
         log("ERROR: %s failed with exit code %d" % (script, exit_code))
 
@@ -59,7 +60,7 @@ def run_all_scripts():
     """ Run all scripts. For the sake of robustness, log and ignore any
     exceptions that occur.
 
-    Must be run inside an archive_dir context. """
+    Must be run within archive_context """
     scripts = os.listdir("sos-scripts")
     for script in scripts:
         try:
@@ -77,7 +78,7 @@ def add_lib_folder_to_python_path():
 def main():
     """ Open an archive context and run all scripts. """
     add_lib_folder_to_python_path()
-    with archive_dir():
+    with archive_context():
         run_all_scripts()
 
 if __name__ == "__main__":

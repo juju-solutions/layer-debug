@@ -1,4 +1,4 @@
 #!/bin/sh
 
-systemctl > $SOS_ARCHIVE_DIR/systemctl
-journalctl > $SOS_ARCHIVE_DIR/journalctl
+systemctl > $SOS_SCRIPT_DIR/systemctl
+journalctl > $SOS_SCRIPT_DIR/journalctl

@@ -1,7 +1,7 @@
 import os
 
-dir = os.environ["SOS_ARCHIVE_DIR"]
+dir = os.environ["SOS_SCRIPT_DIR"]
 
 def open_file(path, *args, **kwargs):
-  """ Open a file within the SOS archive """
+  """ Open a file within the SOS script dir """
   return open(os.path.join(dir, path), *args, **kwargs)

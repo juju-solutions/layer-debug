@@ -1,0 +1,4 @@
+#!/bin/sh
+set -ux
+
+sysctl -a > $SOS_SCRIPT_DIR/sysctl

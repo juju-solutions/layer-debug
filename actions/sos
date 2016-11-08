@@ -13,11 +13,12 @@ archive_dir = None
 log_file = None
 
 @contextmanager
-def archive_dir():
+def archive_context():
     """ Open a context with a new temporary directory.
 
     When the context closes, the directory is archived, and the archive
     location is added to Juju action output. """
+    global archive_dir
     global log_file
     with tempfile.TemporaryDirectory() as temp_dir:
         name = "sos-" + datetime.now().strftime("%Y%m%d%H%M%S")
@@ -34,13 +35,13 @@ def archive_dir():
 def log(msg):
     """ Log a message that will be included in the SOS archive.
 
-    Must be run inside an archive_dir context. """
+    Must be run within archive_context """
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     for line in str(msg).splitlines():
         log_file.write(timestamp + " | " + line.rstrip() + "\n")
 
 def run_script(script):
-    """ Run a single script. Must be run inside an archive_dir context. """
+    """ Run a single script. Must be run within archive_context """
     log("Running script: " + script)
     script_dir = os.path.join(archive_dir, script)
     os.makedirs(script_dir)
@@ -59,7 +60,7 @@ def run_all_scripts():
     """ Run all scripts. For the sake of robustness, log and ignore any
     exceptions that occur.
 
-    Must be run inside an archive_dir context. """
+    Must be run within archive_context """
     scripts = os.listdir("sos-scripts")
     for script in scripts:
         try:
@@ -77,7 +78,7 @@ def add_lib_folder_to_python_path():
 def main():
     """ Open an archive context and run all scripts. """
     add_lib_folder_to_python_path()
-    with archive_dir():
+    with archive_context():
         run_all_scripts()
 
 if __name__ == "__main__":

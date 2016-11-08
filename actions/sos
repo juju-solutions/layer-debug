@@ -46,8 +46,8 @@ def run_script(script):
     script_dir = os.path.join(archive_dir, script)
     os.makedirs(script_dir)
     os.environ["SOS_SCRIPT_DIR"] = script_dir
-    with open("%s/%s.out" % (script_dir, script), "w") as stdout:
-        with open("%s/%s.err" % (script_dir, script), "w") as stderr:
+    with open(script_dir + "/stdout", "w") as stdout:
+        with open(script_dir + "/stderr", "w") as stderr:
             process = subprocess.Popen(
                 "sos-scripts/" + script,
                 stdout=stdout, stderr=stderr

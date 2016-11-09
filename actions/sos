@@ -7,7 +7,7 @@ import tempfile
 import traceback
 from contextlib import contextmanager
 from datetime import datetime
-from charmhelpers.core.hookenv import action_set
+from charmhelpers.core.hookenv import action_set, local_unit
 
 archive_dir = None
 log_file = None
@@ -30,7 +30,10 @@ def archive_context():
         tar_path = "/home/ubuntu/%s.tar.gz" % name
         with tarfile.open(tar_path, "w:gz") as f:
             f.add(name)
-        action_set({"output": "SOS archive dumped to " + tar_path})
+        action_set({
+            "path": tar_path,
+            "command": "juju scp %s:%s ." % (local_unit(), tar_path)
+        })
 
 def log(msg):
     """ Log a message that will be included in the SOS archive.

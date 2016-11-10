@@ -49,7 +49,7 @@ This provides the `sos` action with basic information. That's it!
 When the `sos` action is run, all executable files in the charm's
 `sos-scripts/` folder are run, and their output is included in the archive.
 You can include application-specific information by creating this folder and
-adding our own scripts to to it.
+adding your own scripts to to it.
 
 Both stdout and stderr of SOS scripts are captured. Alternatively, the
 `SOS_SCRIPT_DIR` environment variable points to a directory that the SOS script

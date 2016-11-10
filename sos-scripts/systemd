@@ -1,5 +1,0 @@
-#!/bin/sh
-set -ux
-
-systemctl --all > $SOS_SCRIPT_DIR/systemctl
-journalctl > $SOS_SCRIPT_DIR/journalctl

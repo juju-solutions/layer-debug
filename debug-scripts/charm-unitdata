@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 
-import sos_script
+import debug_script
 import json
 from charmhelpers.core import unitdata
 
 kv = unitdata.kv()
 data = kv.getrange("")
 
-with sos_script.open_file("unitdata.json", "w") as f:
+with debug_script.open_file("unitdata.json", "w") as f:
   json.dump(data, f, indent=2)
   f.write("\n")

@@ -1,4 +1,0 @@
-#!/bin/sh
-set -ux
-
-cp /var/log/juju/* $SOS_SCRIPT_DIR

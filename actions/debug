@@ -21,10 +21,10 @@ def archive_context():
     global archive_dir
     global log_file
     with tempfile.TemporaryDirectory() as temp_dir:
-        name = "sos-" + datetime.now().strftime("%Y%m%d%H%M%S")
+        name = "debug-" + datetime.now().strftime("%Y%m%d%H%M%S")
         archive_dir = os.path.join(temp_dir, name)
         os.makedirs(archive_dir)
-        with open("%s/sos.log" % archive_dir, "w") as log_file:
+        with open("%s/debug.log" % archive_dir, "w") as log_file:
             yield
         os.chdir(temp_dir)
         tar_path = "/home/ubuntu/%s.tar.gz" % name
@@ -36,7 +36,7 @@ def archive_context():
         })
 
 def log(msg):
-    """ Log a message that will be included in the SOS archive.
+    """ Log a message that will be included in the debug archive.
 
     Must be run within archive_context """
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -48,11 +48,11 @@ def run_script(script):
     log("Running script: " + script)
     script_dir = os.path.join(archive_dir, script)
     os.makedirs(script_dir)
-    os.environ["SOS_SCRIPT_DIR"] = script_dir
+    os.environ["DEBUG_SCRIPT_DIR"] = script_dir
     with open(script_dir + "/stdout", "w") as stdout:
         with open(script_dir + "/stderr", "w") as stderr:
             process = subprocess.Popen(
-                "sos-scripts/" + script,
+                "debug-scripts/" + script,
                 stdout=stdout, stderr=stderr
             )
             exit_code = process.wait()
@@ -64,7 +64,7 @@ def run_all_scripts():
     exceptions that occur.
 
     Must be run within archive_context """
-    scripts = os.listdir("sos-scripts")
+    scripts = os.listdir("debug-scripts")
     for script in scripts:
         try:
             run_script(script)
@@ -74,8 +74,8 @@ def run_all_scripts():
 def add_lib_folder_to_python_path():
     """ Add lib folder to python path.
 
-    Reactive hooks do this. We'll do it as well, so that SOS scripts can import
-    the same things that reactive code can. """
+    Reactive hooks do this. We'll do it as well, so that debug scripts can
+    import the same things that reactive code can. """
     os.environ["PYTHONPATH"] = "lib"
 
 def main():

@@ -1,2 +1,2 @@
-sos:
-  description: Gather troubleshooting data
+debug:
+  description: Collect debug data

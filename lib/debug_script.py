@@ -1,8 +1,8 @@
 import os
 
-dir = os.environ["SOS_SCRIPT_DIR"]
+dir = os.environ["DEBUG_SCRIPT_DIR"]
 
 
 def open_file(path, *args, **kwargs):
-    """ Open a file within the SOS script dir """
+    """ Open a file within the debug script dir """
     return open(os.path.join(dir, path), *args, **kwargs)

@@ -1,0 +1,5 @@
+#!/bin/sh
+set -ux
+
+systemctl --all > $DEBUG_SCRIPT_DIR/systemctl
+journalctl > $DEBUG_SCRIPT_DIR/journalctl

@@ -48,12 +48,14 @@ def run_script(script):
     log("Running script: " + script)
     script_dir = os.path.join(archive_dir, script)
     os.makedirs(script_dir)
-    os.environ["DEBUG_SCRIPT_DIR"] = script_dir
+    env = os.environ.copy()
+    env["PYTHONPATH"] = "lib" # allow same imports as reactive code
+    env["DEBUG_SCRIPT_DIR"] = script_dir
     with open(script_dir + "/stdout", "w") as stdout:
         with open(script_dir + "/stderr", "w") as stderr:
             process = subprocess.Popen(
                 "debug-scripts/" + script,
-                stdout=stdout, stderr=stderr
+                stdout=stdout, stderr=stderr, env=env
             )
             exit_code = process.wait()
     if exit_code != 0:
@@ -71,16 +73,8 @@ def run_all_scripts():
         except:
             log(traceback.format_exc())
 
-def add_lib_folder_to_python_path():
-    """ Add lib folder to python path.
-
-    Reactive hooks do this. We'll do it as well, so that debug scripts can
-    import the same things that reactive code can. """
-    os.environ["PYTHONPATH"] = "lib"
-
 def main():
     """ Open an archive context and run all scripts. """
-    add_lib_folder_to_python_path()
     with archive_context():
         run_all_scripts()
 

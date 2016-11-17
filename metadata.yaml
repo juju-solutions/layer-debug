@@ -1,6 +1,7 @@
 name: debug
 summary: Provides a troubleshooting debug action
-maintainer: George Kraft <george.kraft@canonical.com>
+maintainers:
+  - George Kraft <george.kraft@canonical.com>
 description: |
   This layer provides a debug action, which allows users to gather
   charm-specific debug data for troubleshooting purposes.

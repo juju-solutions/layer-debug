@@ -1,4 +1,4 @@
 #!/bin/sh
 set -ux
 
-cp /var/log/juju/* $DEBUG_SCRIPT_DIR
+cp -v /var/log/juju/* $DEBUG_SCRIPT_DIR

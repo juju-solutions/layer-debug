@@ -12,6 +12,7 @@ from charmhelpers.core.hookenv import action_set, local_unit
 archive_dir = None
 log_file = None
 
+
 @contextmanager
 def archive_context():
     """ Open a context with a new temporary directory.
@@ -32,8 +33,13 @@ def archive_context():
             f.add(name)
         action_set({
             "path": tar_path,
-            "command": "juju scp %s:%s ." % (local_unit(), tar_path)
+            "command": "juju scp %s:%s ." % (local_unit(), tar_path),
+            "message": " ".join([
+                "Archive has been created on unit %s." % local_unit(),
+                "Use the juju scp command to copy it to your local machine."
+            ])
         })
+
 
 def log(msg):
     """ Log a message that will be included in the debug archive.
@@ -43,13 +49,14 @@ def log(msg):
     for line in str(msg).splitlines():
         log_file.write(timestamp + " | " + line.rstrip() + "\n")
 
+
 def run_script(script):
     """ Run a single script. Must be run within archive_context """
     log("Running script: " + script)
     script_dir = os.path.join(archive_dir, script)
     os.makedirs(script_dir)
     env = os.environ.copy()
-    env["PYTHONPATH"] = "lib" # allow same imports as reactive code
+    env["PYTHONPATH"] = "lib"  # allow same imports as reactive code
     env["DEBUG_SCRIPT_DIR"] = script_dir
     with open(script_dir + "/stdout", "w") as stdout:
         with open(script_dir + "/stderr", "w") as stderr:
@@ -60,6 +67,7 @@ def run_script(script):
             exit_code = process.wait()
     if exit_code != 0:
         log("ERROR: %s failed with exit code %d" % (script, exit_code))
+
 
 def run_all_scripts():
     """ Run all scripts. For the sake of robustness, log and ignore any
@@ -73,10 +81,12 @@ def run_all_scripts():
         except:
             log(traceback.format_exc())
 
+
 def main():
     """ Open an archive context and run all scripts. """
     with archive_context():
         run_all_scripts()
+
 
 if __name__ == "__main__":
     main()

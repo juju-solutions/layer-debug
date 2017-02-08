@@ -18,6 +18,8 @@ This produces a .tar.gz file which you can retrieve:
 $ juju show-action-output 4b26e339-7366-4dc7-80ed-255ac0377020
 results:
   command: juju scp debug-test/0:/home/ubuntu/debug-20161110151539.tar.gz .
+  message: Archive has been created on unit debug-test/0. Use the juju scp
+    command to copy it to your local machine.
   path: /home/ubuntu/debug-20161110151539.tar.gz
 status: completed
 timing:

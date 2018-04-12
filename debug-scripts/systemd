@@ -6,5 +6,4 @@ journalctl > $DEBUG_SCRIPT_DIR/journalctl
 systemd-analyze time > $DEBUG_SCRIPT_DIR/systemd-analyze-time
 systemd-analyze blame > $DEBUG_SCRIPT_DIR/systemd-analyze-blame
 systemd-analyze critical-chain > $DEBUG_SCRIPT_DIR/systemd-analyze-critical-chain
-systemd-analyze plot > $DEBUG_SCRIPT_DIR/systemd-analyze-plot.svg
 systemd-analyze dump > $DEBUG_SCRIPT_DIR/systemd-analyze-dump

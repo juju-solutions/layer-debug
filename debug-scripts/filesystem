@@ -2,7 +2,7 @@
 set -ux
 
 # report file system disk space usage
-df -h > $DEBUG_SCRIPT_DIR/df-h
+df -hT > $DEBUG_SCRIPT_DIR/df-hT
 # estimate file space usage
 du -h / 2>&1 > $DEBUG_SCRIPT_DIR/du-h
 # list the mounted filesystems

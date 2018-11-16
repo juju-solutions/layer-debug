@@ -64,7 +64,17 @@ def run_script(script):
                 "debug-scripts/" + script,
                 stdout=stdout, stderr=stderr, env=env
             )
-            exit_code = process.wait()
+            try:
+                exit_code = process.wait(timeout=300)
+            except subprocess.TimeoutExpired:
+                log("ERROR: still running, terminating")
+                process.terminate()
+                try:
+                    exit_code = process.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    log("ERROR: still running, killing")
+                    process.kill()
+                    exit_code = process.wait(timeout=10)
     if exit_code != 0:
         log("ERROR: %s failed with exit code %d" % (script, exit_code))
 

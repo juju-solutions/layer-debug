@@ -1,9 +1,11 @@
 #!/bin/sh
 set -ux
 
-ifconfig -a > $DEBUG_SCRIPT_DIR/ifconfig
+ip -d address > $DEBUG_SCRIPT_DIR/ip_-d_address
 cp -v /etc/resolv.conf $DEBUG_SCRIPT_DIR/resolv.conf
+systemd-resolve --status > $DEBUG_SCRIPT_DIR/systemd_resolve_status
 cp -v /etc/network/interfaces $DEBUG_SCRIPT_DIR/interfaces
+cp -v -r /etc/netplan/ $DEBUG_SCRIPT_DIR/netplan
 netstat -planut > $DEBUG_SCRIPT_DIR/netstat
 route -n > $DEBUG_SCRIPT_DIR/route
 iptables-save > $DEBUG_SCRIPT_DIR/iptables-save
